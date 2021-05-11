@@ -25,7 +25,7 @@
             const nameBox = document.querySelector("#nameBox")
 
             let ws
-
+            const phone = "09107122282"
             function showMessage(message) {
                 messages.textContent += `\n\n${message}`
                 messages.scrollTop = messages.scrollHeight
@@ -43,8 +43,11 @@
                 }
                 ws.onmessage = ({
                     data
-                }) => showMessage(data)
-                ws.on('close', () => {
+                }) => {
+                    const input = JSON.parse(data)
+                    if(input.user.phone === phone)showMessage(input.user.userName +" said: "+input.data.message)
+                }
+                ws.onclose = (() => {
                     ws = null
                 })
             }
@@ -53,7 +56,11 @@
                     showMessage("no ws")
                     return
                 }
-                ws.send(nameBox.value +" said: "+messageBox.value)
+                const user = JSON.stringify({
+                    phone:ph,
+                    message: messageBox.value
+                })
+                ws.send(user)
                 // showMessage(messageBox.value)
             }
             init()
