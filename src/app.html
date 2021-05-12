@@ -43,18 +43,22 @@
                 }
                 ws.onmessage = ({
                     data
-                }) => showMessage(data)
-                ws.on('close', () => {
+                }) => showMessage(JSON.parse(data).message)
+                ws.onclose = () => {
                     ws = null
-                })
+                }
             }
-            sendBtn.onclick = function () {
+            sendBtn.onclick = ()=>{
                 if (!ws) {
                     showMessage("no ws")
                     return
                 }
-                ws.send(nameBox.value +" said: "+messageBox.value)
-                // showMessage(messageBox.value)
+                let outPut = JSON.stringify({
+                    token:"123456",
+                    password:nameBox.value.toString(),
+                    message : nameBox.value +" said: "+messageBox.value
+                })
+                ws.send(outPut)
             }
             init()
         })()

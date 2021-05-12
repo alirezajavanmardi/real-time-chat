@@ -6,9 +6,15 @@ const port = 8080;
 const wsServer = new ws.Server({ server });
 
 wsServer.on("connection", (wss) => {
-  wss.on("message", (message) => {
+  wss.on("message", (input) => {
     wsServer.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === ws.OPEN) client.send(message);
+      if (client !== ws && client.readyState === ws.OPEN) {
+        const data = JSON.parse(input)
+        if(data.password === "123456"){
+          console.log(data.message);
+          client.send(JSON.stringify(data))
+        }
+      }
     });
   });
 });
